@@ -13,6 +13,7 @@ Q1. Create an userSchema which has fields
     }
 
 1. Define unique indexes on username and email.
+
 2. define compound indexes on state and country field inside address document. Each country must have states which are unique.
 
 Q2. Create an article Schema with fields

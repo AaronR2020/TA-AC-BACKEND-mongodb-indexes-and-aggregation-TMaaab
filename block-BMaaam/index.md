@@ -5,23 +5,64 @@ Insert the data present in users.json into local mongodb database using `mongoim
 Write aggregation queries to perform following tasks.
 
 1. Find all users who are active.
+db.users.aggregate([{ $match: { isActive: true } }]).pretty();
 
 2. Find all users whose name includes `blake` case insensitive.
+db.users
+  .aggregate([{ $match: { name: { $regex: 'blake', $options: 'i' } } }])
+  .pretty();
 
 3. Find all males.
+db.users.aggregate([{ $match: { gender: 'male' } }, {}]).pretty();
 
 4. Find all active males.
+db.users.aggregate([{ $match: { isActive: true, gender: 'male' } }]).pretty();
 
 5. Find all active females whose age is >= 25.
+db.users
+  .aggregate([
+    { 
+      $match: { isActive: true, gender: 'female', age: { $gte: 25 } } },
+  ])
+  .pretty();
 
 6. Find all 40+ males with green eyecolor.
+db.users
+  .aggregate([
+    { 
+      $match: {
+         eyecolor: 'green',
+          gender: 'male', 
+          age: { $gte: 40 } 
+              }
+           },
+  ])
+  .pretty();
 
 7. Find all blue eyed men working in 'USA'.
+db.users
+  .aggregate([
+    {
+      $match: {
+        eyecolor: 'blue',
+        gender: 'male',
+        country: { company: { location: 'USA' } },
+      },
+    },
+  ])
+  .pretty();
 
 8. Find all female working in Germany with green eyes and apple as favoriteFruit.
 
 9. Count total male and females.
-
+db.users.aggregate([
+  {
+    $group: {
+      _id: '$gender',
+      count: { $accumilator: 1 },
+    },
+  },
+]);
 10. Count all whose eyeColor is green.
 
 11. Count all 20+ females who have brown eyes.
@@ -38,6 +79,14 @@ green -> 123
 13. Count all females whose tags array include `amet` in it.
 
 14. Find the average age of entire collection
+db.users.aggregate([
+  {
+    $group: {
+      _id: null,
+      avg_age: { $avg: '$age' },
+    },
+  },
+]);
 
 15. Find the average age of males and females i.e. group them by gender.
 
@@ -59,7 +108,7 @@ green -> 123
 
 24. Group all females by their favoriteFruit.
 
-25. Scan all the document to retrieve all eyeColors(use db.COLLECTION_NAME.distinct);
+25. Scan all the document to retrieve all eyeColors(use db.COLLECTION_NAME.distinct);db.users.distinct('eyeColor');
 
 26. Find all apple loving blue eyed female working in 'USA'. Sort them by their registration date in descending order.
 
